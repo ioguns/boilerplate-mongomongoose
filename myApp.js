@@ -1,26 +1,82 @@
 require('dotenv').config();
+const mongoose = require('mongoose');
 
 
-let Person;
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
+
+let personSchema = new mongoose.Schema({
+  name: String,
+  age: Number,
+  favoriteFoods: [String]
+})
+
+let Person = mongoose.model('Person', personSchema);
 
 const createAndSavePerson = (done) => {
-  done(null /*, data*/);
+  let person = new Person({
+    name: 'ADA.LOVELACE',
+    age: 20,
+    favoriteFoods: ['eba', 'fufu']
+  });
+
+  person.save(function(err, data) {
+    if (err) {
+     return done(err);
+    }
+     done(null,data);
+  });
 };
 
+const arrayOfPeople =[{
+    name: 'name 0',
+    age: 20,
+    favoriteFoods: ['food 01', 'food 02']
+  },
+                     {
+    name: 'name 1',
+    age: 20,
+    favoriteFoods: ['food 11', 'food 12']
+  },
+                     {
+    name: 'name 2',
+    age: 20,
+    favoriteFoods: ['food 21', 'food 22']
+  }];
+
 const createManyPeople = (arrayOfPeople, done) => {
-  done(null /*, data*/);
+   Person.create(arrayOfPeople,function(err, people) {
+    if (err) {
+     return done(err);
+    }
+     done(null,people);
+  });
 };
 
 const findPeopleByName = (personName, done) => {
-  done(null /*, data*/);
+ Person.find({name:personName},function(err, people) {
+    if (err) {
+     return done(err);
+    }
+     done(null,people);
+  });
 };
 
 const findOneByFood = (food, done) => {
-  done(null /*, data*/);
+  Person.findOne({favoriteFoods:food},function(err, person) {
+    if (err) {
+     return done(err);
+    }
+     done(null,person);
+  });
 };
 
 const findPersonById = (personId, done) => {
-  done(null /*, data*/);
+  Person.findOne({_id:personId},function(err, person) {
+    if (err) {
+     return done(err);
+    }
+     done(null,person);
+  });
 };
 
 const findEditThenSave = (personId, done) => {
